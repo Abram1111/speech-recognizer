@@ -1,1 +1,0 @@
-# Task3_recognizer
