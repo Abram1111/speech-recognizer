@@ -15,12 +15,12 @@
     <!-- <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <link rel="stylesheet" href="static/assets/style.css"/>
+    <!-- <link rel="stylesheet" href="static/assets/style.css"/> -->
    
     <title> Recognizer</title>
     
 </head>
-<script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
 <script src="https://markjivko.com/dist/recorder.js"></script>
 <script>
     jQuery(document).ready(function () {
@@ -104,18 +104,53 @@
                 myRecorder.start();
             } else {
                 $(this).attr('data-recording', '');
-                myRecorder.stop(listObject);
+                myRecorder.stop(listObject); 
+
+                var your_data = {audio : listObject}
+
+
+                fetch(`${window.origin}/your_url`, {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify(your_data),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+                })
+
             }
         });
     });
-</script>
+
+ 
+</script> -->
+
+
 </head>
 <body>
-<div class="holder">
-    <div data-role="controls">
-        <button>Record</button>
+    <div id="speechRecognition">
+
+            <h1>you have said :</h1>
+            {% if speech != "" %}
+            <p id="speechText">{{ speech }}</p>
+            {% endif %}
+            <h1>state :</h1>
+            {% if state != "" %}
+            <p id="speechstate">{{ state }}</p>
+            {% endif %}
+            <form method="post" action="/">
+                <input type="submit" value="Start" name="action1"/>
+            </form>
+
+
+
     </div>
-    <div data-role="recordings"></div>
-</div>
+    <!-- <div class="holder">
+        <div data-role="controls">
+            <button>Record</button>
+        </div>
+        <div data-role="recordings"></div>
+    </div> -->
 </body>
 </html>
