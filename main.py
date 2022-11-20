@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import speech_recognition as sr
+class variables:
+    button_pressed_num=0
 
 app = Flask(__name__)
 
@@ -7,20 +9,21 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
 
-
         speech=''
         state=''
         source=''
 
         if request.method == "POST":
+            variables.button_pressed_num+=1
+            print( variables.button_pressed_num)
+
             r = sr.Recognizer()
 
             with sr.Microphone() as source:
                 print("Password")
-
                 r.adjust_for_ambient_noise(source)
                 audio = r.listen(source)
-
+                
                 print("Recognizing Now .... ")
 
 
@@ -45,6 +48,7 @@ def index():
                 else :
                     state='not a correct pass'
                     print('not a correct pass')
+                
         return render_template('index.html', speech=speech,state=state )
 
 
