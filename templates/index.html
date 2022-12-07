@@ -52,16 +52,6 @@
                                 // Export the WAV file
                                 myRecorder.objects.recorder.exportWAV(function (blob) {
                                     var data = new FormData()
-                                    data.append('file', blob,'file')
-
-                                    fetch('http://127.0.0.1:5000/receive', {
-                                        method: 'POST',
-                                        body: data
-
-                                    }).then(response => response.json()
-                                    ).then(json => {
-                                        console.log(json)
-                                    });
                                     var url = (window.URL || window.webkitURL)
                                             .createObjectURL(blob);
 
