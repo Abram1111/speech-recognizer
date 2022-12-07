@@ -98,15 +98,18 @@
 
 
 <body>
-    <!-- <div id="speechRecognition">
 
-            <h1>you have said :</h1>
+    <div id="speechRecognition">
+            <h1>{{ file_name }}</h1>
+            <h1>{{ y }}</h1>
+            <h1>{{ sr }}</h1>
+            <h1>password :</h1>
             {% if speech != "" %}
             <p id="speechText">{{ speech }}</p>
             {% endif %}
-            <h1>state :</h1>
-            {% if state != "" %}
-            <p id="speechstate">{{ state }}</p>
+            <h1>speaker :</h1>
+            {% if speaker != "" %}
+            <p id="speechstate">{{ speaker }}</p>
             {% endif %}
             <form method="post" action="/">
                 <div class="holder">
@@ -119,12 +122,12 @@
 
 
 
-    </div> -->
-    <div class="holder">
+    </div>
+    <!-- <div class="holder">
         <div data-role="controls">
             <button>Record</button>
         </div>
         <div data-role="recordings"></div>
-    </div>
+    </div> -->
 </body>
 </html>
