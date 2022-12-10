@@ -15,6 +15,8 @@ import base64
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import seaborn as sns
 import wave
+from PIL import Image 
+import PIL 
 
 
 
@@ -111,6 +113,7 @@ def predict_sound(file_name):
     return result
 
 def  visualize(file_name):
+
     fig,ax = plt.subplots(figsize=(6,6))
     ax=sns.set_style(style='darkgrid')
     sr, y = wavfile.read(file_name)
@@ -124,9 +127,12 @@ def  visualize(file_name):
     canvas=FigureCanvas(fig)
     img=io.BytesIO()
     fig.savefig(img, format='png')
+
     img.seek(0)
     # Embed the result in the html output.
     data = base64.b64encode(img.getbuffer()).decode("ascii")
+    image_file_name='static/assets/images/result'+str(variables.counter)+'.jpg'
+    plt.savefig(image_file_name)
     return f"<img src='data:image/png;base64,{data}'/>"
     # return img
 
@@ -139,6 +145,7 @@ def index():
         speaker =''
         file_name=''
         img=''
+
         y=[]
         sr=[]
 
@@ -157,12 +164,13 @@ def index():
             # using wavio to save the recording in .wav format
             # This will convert the NumPy array to an audio
             # file with the given sampling frequency
-            wv.write("result.wav", recording, frequency, sampwidth=2)
-            speech=test_model("result.wav")
-            speaker=predict_sound("result.wav")
-            file_name="result.wav"
+            file_name='result'+str(variables.counter)+'.wav'
+            wv.write(file_name, recording, frequency, sampwidth=2)
+            speech=test_model(file_name)
+            speaker=predict_sound(file_name)
             # y, sr = librosa.load(file_name)
-            img= visualize("result.wav")
+            img= visualize(file_name)
+            img='static/assets/images/result'+str(variables.counter)+'.jpg'
 
 
         # return send_file(speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr)
