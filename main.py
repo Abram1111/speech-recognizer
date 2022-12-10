@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect,jsonify
+from flask import Flask, render_template, send_file, request, redirect,jsonify
 import os
 import speech_recognition as sr
 import pickle
@@ -6,6 +6,15 @@ import librosa
 import numpy as np
 import sounddevice as sd
 import wavio as wv
+    # for visualizing the data
+import matplotlib.pyplot as plt
+    # for opening the media file
+import scipy.io.wavfile as wavfile
+import io 
+import base64 
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import seaborn as sns
+import wave
 
 
 
@@ -96,10 +105,30 @@ def predict_sound(file_name):
     features=[]
 
     features.append(np.concatenate((mfccs, chroma, mel, contrast, tonnetz),axis=0))
-    open_model = pickle.load(open("audio_identefire (1).pkl",'rb'))
+    open_model = pickle.load(open(".pkl",'rb'))
     result =open_model.predict(features)
     print(result)
     return result
+
+def  visualize(file_name):
+    fig,ax = plt.subplots(figsize=(6,6))
+    ax=sns.set_style(style='darkgrid')
+    sr, y = wavfile.read(file_name)
+    # select left channel only
+    y = y[:,0]
+    # trim the first 125 seconds
+    first = y[:int(sr*15)]
+
+    powerSpectrum, frequenciesFound, time, imageAxis = plt.specgram(first, Fs=sr)
+    # plt.show()
+    canvas=FigureCanvas(fig)
+    img=io.BytesIO()
+    fig.savefig(img, format='png')
+    img.seek(0)
+    # Embed the result in the html output.
+    data = base64.b64encode(img.getbuffer()).decode("ascii")
+    return f"<img src='data:image/png;base64,{data}'/>"
+    # return img
 
 
 
@@ -109,6 +138,7 @@ def index():
         speech =''
         speaker =''
         file_name=''
+        img=''
         y=[]
         sr=[]
 
@@ -127,19 +157,17 @@ def index():
             # using wavio to save the recording in .wav format
             # This will convert the NumPy array to an audio
             # file with the given sampling frequency
-            file_name="result"+str(variables.counter)+'.wav'
-
-            wv.write(file_name, recording, frequency, sampwidth=2)
-            speech =''
-
-            speech=test_model(file_name)
-            speaker=predict_sound(file_name)
-            y, sr = librosa.load(file_name)
+            wv.write("result.wav", recording, frequency, sampwidth=2)
+            speech=test_model("result.wav")
+            speaker=predict_sound("result.wav")
+            file_name="result.wav"
+            # y, sr = librosa.load(file_name)
+            img= visualize("result.wav")
 
 
+        # return send_file(speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr)
+        return render_template('index.html', speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr,img=img)
 
-
-        return render_template('index.html', speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr)
 
 
 if __name__ == "__main__":
