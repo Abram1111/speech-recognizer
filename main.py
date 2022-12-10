@@ -10,7 +10,8 @@ import wavio as wv
 
 
 app = Flask(__name__)
-
+class variables:
+    counter=0
 
 # @app.route("/receive", methods=['post'])
 # def form():
@@ -27,6 +28,7 @@ app = Flask(__name__)
 #     return response
 
 def prepare_testing(to_test):
+
     features=[]
     # reading records
     y, sr = librosa.load(to_test)
@@ -40,7 +42,7 @@ def prepare_testing(to_test):
     rolloff     = librosa.feature.spectral_rolloff(y=y, sr=sr)
     zcr         = librosa.feature.zero_crossing_rate(y)
     mfcc        = librosa.feature.mfcc(y=y, sr=sr)
-    to_append   = f' {np.mean(rmse)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'
+    to_append   = f'{np.mean(chroma_stft)} {np.mean(rmse)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'
     for e in mfcc:
         to_append += f' {np.mean(e)}'
     
@@ -49,22 +51,25 @@ def prepare_testing(to_test):
     
     for index in range(0,len(features[0])):
         features[0][index]=float(features[0][index])
-
+    print (features)
     return features
 
 def test_model (wav_file):
     # wav_file='k_close_2.wav'
-    
-    features=prepare_testing(wav_file)
-    model= pickle.load(open('model.pkl','rb'))
-    model_output =model.predict(features)
+    # wav_file='a_open_8.wav'
 
-    if model_output==0:
+    wav_file='r_open_ (3).wav'
+    features=prepare_testing(wav_file)
+    model= pickle.load(open('model_random1.pkl','rb'))
+    model_output =model.predict(features)
+    print (model_output[0])
+    
+    if   model_output[0]==0:
         result='Close the door'
-    elif model_output==1:
+    elif model_output[0]==1:
         result='Open the door'
-    else:
-        result=''
+    elif model_output==2:
+        result='not recognized'
         
     print('reeeeeeesult---------------------')
     print(result)
@@ -91,7 +96,7 @@ def predict_sound(file_name):
     features=[]
 
     features.append(np.concatenate((mfccs, chroma, mel, contrast, tonnetz),axis=0))
-    open_model = pickle.load(open("audio_identefire.pkl",'rb'))
+    open_model = pickle.load(open("audio_identefire (1).pkl",'rb'))
     result =open_model.predict(features)
     print(result)
     return result
@@ -101,7 +106,6 @@ def predict_sound(file_name):
 @app.route("/", methods=["GET", "POST"])
 def index():
 
-
         speech =''
         speaker =''
         file_name=''
@@ -110,11 +114,11 @@ def index():
 
 
         if request.method == "POST":
-
+            variables.counter+=1
             # Sampling frequency
             frequency = 44400
             # Recording duration in seconds
-            duration = 1
+            duration = 1.5
             # to record audio from
             # sound-device into a Numpy
             recording = sd.rec(int(duration * frequency),samplerate = frequency, channels = 2)
@@ -123,10 +127,13 @@ def index():
             # using wavio to save the recording in .wav format
             # This will convert the NumPy array to an audio
             # file with the given sampling frequency
-            wv.write("result.wav", recording, frequency, sampwidth=2)
-            speech=test_model("result.wav")
-            speaker=predict_sound("result.wav")
-            file_name="result.wav"
+            file_name="result"+str(variables.counter)+'.wav'
+
+            wv.write(file_name, recording, frequency, sampwidth=2)
+            speech =''
+
+            speech=test_model(file_name)
+            speaker=predict_sound(file_name)
             y, sr = librosa.load(file_name)
 
 
