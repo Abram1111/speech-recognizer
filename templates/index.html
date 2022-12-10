@@ -5,7 +5,7 @@
         <link rel="canonical" href="https://markjivko.com/tutorials/B3wWIsNHPk4/">
         <meta charset="UTF-8">
         <link rel="icon" type="image/ico" href="https://markjivko.com/favicon.ico">
-        <link rel="stylesheet" href="../static/assets/style.css"/>
+        <link rel="stylesheet" href="../static/assets/css/style.css"/>
    
     <title> Recognizer</title>
 
@@ -98,36 +98,59 @@
 
 
 <body>
-
-    <div id="speechRecognition">
-            <h1>{{ file_name }}</h1>
-            <h1>{{ y }}</h1>
-            <h1>{{ sr }}</h1>
-            <h1>password :</h1>
-            {% if speech != "" %}
-            <p id="speechText">{{ speech }}</p>
-            {% endif %}
-            <h1>speaker :</h1>
-            {% if speaker != "" %}
-            <p id="speechstate">{{ speaker }}</p>
-            {% endif %}
-            <form method="post" action="/">
-                <div class="holder">
-                    <div data-role="controls">
-                        <button>Record</button>
+    <header class="con1">
+        
+            <div id="speechRecognition">
+                    <div id="result1">
+                        <h1>password </h1>
+                        {% if speech != "" %}
+                        <p id="speechText">{{ speech }}</p>
+                        {% endif %}
                     </div>
-                    <div data-role="recordings"></div>
-                </div>          
-   </form>
+                    <div id="result2">
+                        <h1>speaker </h1>
+                        {% if speaker != "" %}
+                        <p id="speechstate">{{ speaker }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="spectro">
+                        <h1>Data representation</h1>
+                
+                        <img style="height:500px " src="{{img}}">  
+                   </div>
+                        
+    </header>
+    <form method="post" action="/">
+        <div class="holder">
+            <div data-role="controls">
+                <button>
+                    <ion-icon name="mic-outline"></ion-icon>
+                </button>
+            </div>
+            <div data-role="recordings">
+                
+            </div>
 
-
-
+        </div>          
+    </form>
+    <div class="fet">
+        <h1> Features</h1>
     </div>
+    
+   
+       
+<script>
+    
+</script>
+
+    <!-- </div> -->
     <!-- <div class="holder">
         <div data-role="controls">
             <button>Record</button>
         </div>
         <div data-role="recordings"></div>
     </div> -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
