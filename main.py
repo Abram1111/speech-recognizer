@@ -22,19 +22,7 @@ app = Flask(__name__)
 class variables:
     counter=0
 
-# @app.route("/receive", methods=['post'])
-# def form():
-#     files = request.files
-#     file = files.get('file')
-#     print(file)
 
-#     with open(os.path.abspath(f'backend/audios/{file}'), 'wb') as f:
-#         f.write(file.content)
-
-#     response = jsonify("File received and saved!")
-#     response.headers.add('Access-Control-Allow-Origin', '*')
-
-#     return response
 def features_spectogram (feature_name ,feature):
 
 
@@ -48,8 +36,47 @@ def features_spectogram (feature_name ,feature):
     image_file_name='static/assets/images/'+feature_name +'.jpg'
     plt.savefig(image_file_name)
 
+def draw_mel(sr,mel_Spectrogram,fet_name):
+    plt.figure(figsize=(6, 6))
+    S_dB = librosa.power_to_db(mel_Spectrogram, ref=np.max)
+    librosa.display.specshow(S_dB)
+    plt.colorbar()
+    image_file_name='static/assets/images/'+fet_name +'.jpg'
+    plt.savefig(image_file_name)
     
+    
+def draw_contrast(Spectrogram,sr,fet_name):
+    plt.figure(figsize=(6, 6))
+    contrast = librosa.feature.spectral_contrast(S=Spectrogram, sr=sr)
+    librosa.display.specshow(contrast)
+    plt.colorbar()
+    image_file_name='static/assets/images/'+fet_name +'.jpg'
+    plt.savefig(image_file_name)
+   
+    
+def draw_centroid(Spectrogram,fet_name):
+    cent=librosa.feature.spectral_centroid(S=Spectrogram)
+    times = librosa.times_like(cent)
+    fig, ax = plt.subplots()
+    centroid_img=librosa.display.specshow(librosa.amplitude_to_db(Spectrogram, ref=np.max),
+                            y_axis='log', x_axis='time', ax=ax)
+    ax.plot(times, cent.T, label='Spectral centroid', color='w')
+    ax.legend(loc='upper right')
+    ax.set(title='log Power spectrogram')
+    image_file_name='static/assets/images/'+fet_name +'.jpg'
+    plt.savefig(image_file_name)
 
+
+
+def draw(file_name):
+    signal, sr = librosa.load(file_name)
+    Spectrogram = np.abs(librosa.stft(signal))
+    mel_Spectrogram = librosa.feature.melspectrogram(y=signal, sr=sr, n_mels=128,
+                                        fmax=8000)
+
+    draw_mel(sr,mel_Spectrogram,'mel')   
+    draw_contrast(Spectrogram,sr,'contrast')
+    draw_centroid(Spectrogram,'centroid')
 
 
 
@@ -70,6 +97,7 @@ def prepare_testing(to_test):
     mfcc        = librosa.feature.mfcc(y=y, sr=sr)
 
     features_spectogram ('mfcc',mfcc)
+    
     # features_spectogram ('rms',rmse)
 
 
@@ -119,6 +147,7 @@ def predict_sound(file_name):
     chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T,axis=0)
     # Computes a mel-scaled spectrogram.
     mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T,axis=0)
+    
     # Computes spectral contrast
     contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T,axis=0)
     # Computes the tonal centroid features (tonnetz)
@@ -191,6 +220,7 @@ def index():
             speech=test_model(file_name)
             speaker=predict_sound(file_name)
             # y, sr = librosa.load(file_name)
+            draw(file_name)
             img= visualize(file_name)
             img='static/assets/images/result'+str(variables.counter)+'.jpg'
 
