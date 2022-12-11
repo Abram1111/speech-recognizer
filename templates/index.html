@@ -1,160 +1,219 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Tutorial &gt; Audio Recorder</title>
-        <link rel="canonical" href="https://markjivko.com/tutorials/B3wWIsNHPk4/">
-        <meta charset="UTF-8">
-        <link rel="icon" type="image/ico" href="https://markjivko.com/favicon.ico">
-        <link rel="stylesheet" href="../static/assets/css/style.css"/>
-   
-    <title> Recognizer</title>
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
-        <script src="https://markjivko.com/dist/recorder.js"></script>
-        <script>
-            jQuery(document).ready(function () {
-                var $ = jQuery;
-                var myRecorder = {
-                    objects: {
-                        context: null,
-                        stream: null,
-                        recorder: null
-                    },
-                    init: function () {
-                        if (null === myRecorder.objects.context) {
-                            myRecorder.objects.context = new (
-                                    window.AudioContext || window.webkitAudioContext
-                                    );
-                        }
-                    },
-                    start: function () {
-                        var options = {audio: true, video: false};
-                        navigator.mediaDevices.getUserMedia(options).then(function (stream) {
-                            myRecorder.objects.stream = stream;
-                            myRecorder.objects.recorder = new Recorder(
-                                    myRecorder.objects.context.createMediaStreamSource(stream),
-                                    {numChannels: 1}
-                            );
-                            myRecorder.objects.recorder.record();
-                        }).catch(function (err) {});
-                    },
-                    stop: function (listObject) {
-                        if (null !== myRecorder.objects.stream) {
-                            myRecorder.objects.stream.getAudioTracks()[0].stop();
-                        }
-                        if (null !== myRecorder.objects.recorder) {
-                            myRecorder.objects.recorder.stop();
-
-                            // Validate object
-                            if (null !== listObject
-                                    && 'object' === typeof listObject
-                                    && listObject.length > 0) {
-                                // Export the WAV file
-                                myRecorder.objects.recorder.exportWAV(function (blob) {
-                                    var data = new FormData()
-                                    var url = (window.URL || window.webkitURL)
-                                            .createObjectURL(blob);
-
-                                    // Prepare the playback
-                                    var audioObject = $('<audio controls></audio>')
-                                            .attr('src', url);
-                                            
-                                    // Wrap everything in a row
-                                    var holderObject = $('<div class="row"></div>')
-                                            .append(audioObject)
-                                           
-                                    // Append to the list
-                                    listObject.append(holderObject);
-                                });
-                            }
-                        }
-                    }
-                };
-
-                // Prepare the recordings list
-                var listObject = $('[data-role="recordings"]');
-
-                // Prepare the record button
-                $('[data-role="controls"] > button').click(function () {
-                    // Initialize the recorder
-                    myRecorder.init();
-
-                    // Get the button state 
-                    var buttonState = !!$(this).attr('data-recording');
-
-                    // Toggle
-                    if (!buttonState) {
-                        $(this).attr('data-recording', 'true');
-                        myRecorder.start();
-                    } else {
-                        $(this).attr('data-recording', '');
-                        myRecorder.stop(listObject);
-                    }
-                });
-            });
-        </script>
+<html style="font-size: 16px;" lang="en"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Brand Strategy, Our Portfolio, Read what our customers say, We Keep Great Company, How we create brand power, Contact Us">
+    <meta name="description" content="">
+    <title>Home</title>
+    <link rel="stylesheet" href="../static/assets/css/nicepage.css" media="screen">
+<link rel="stylesheet" href="../static/assets/css/style.css" media="screen">
+    <script class="u-script" type="text/javascript" src="../static/assets/js/jquery.js" defer=""></script>
+    <script class="u-script" type="text/javascript" src="../static/assets/js/nicepage.js"defer=""></script>
+    <meta name="generator" content="Nicepage 5.1.5, nicepage.com">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
     
-</head>
-
-
-<body>
-    <header class="con1">
-        
-            <div id="speechRecognition">
-                    <div id="result1">
-                        <h1>password </h1>
-                        {% if speech != "" %}
-                        <p id="speechText">{{ speech }}</p>
-                        {% endif %}
-                    </div>
-                    <div id="result2">
-                        <h1>speaker </h1>
-                        {% if speaker != "" %}
-                        <p id="speechstate">{{ speaker }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="spectro">
-                        <h1>Data representation</h1>
-                
-                        <img style="height:500px " src="{{img}}">  
-                        <!-- <img src="static\assets\images\result.jpeg" alt="results" width="400" height="400"> -->
-
-
-                   </div>
-                        
-    </header>
-    <form method="post" action="/">
-        <div class="holder">
-            <div data-role="controls">
-                <button>
-                    <ion-icon name="mic-outline"></ion-icon>
-                </button>
-            </div>
-            <div data-role="recordings">
-                
-            </div>
-
-        </div>          
-    </form>
-    <div class="fet">
-        <h1> Features</h1>
-    </div>
     
-   
-       
+    <script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": ""
+}</script>
+<script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
+<script src="https://markjivko.com/dist/recorder.js"></script>
 <script>
-    
+  jQuery(document).ready(function () {
+      var $ = jQuery;
+      var myRecorder = {
+          objects: {
+              context: null,
+              stream: null,
+              recorder: null
+          },
+          init: function () {
+              if (null === myRecorder.objects.context) {
+                  myRecorder.objects.context = new (
+                          window.AudioContext || window.webkitAudioContext
+                          );
+              }
+          },
+          start: function () {
+              var options = {audio: true, video: false};
+              navigator.mediaDevices.getUserMedia(options).then(function (stream) {
+                  myRecorder.objects.stream = stream;
+                  myRecorder.objects.recorder = new Recorder(
+                          myRecorder.objects.context.createMediaStreamSource(stream),
+                          {numChannels: 1}
+                  );
+                  myRecorder.objects.recorder.record();
+              }).catch(function (err) {});
+          },
+          stop: function (listObject) {
+              if (null !== myRecorder.objects.stream) {
+                  myRecorder.objects.stream.getAudioTracks()[0].stop();
+              }
+              if (null !== myRecorder.objects.recorder) {
+                  myRecorder.objects.recorder.stop();
+
+                  // Validate object
+                  if (null !== listObject
+                          && 'object' === typeof listObject
+                          && listObject.length > 0) {
+                      // Export the WAV file
+                      myRecorder.objects.recorder.exportWAV(function (blob) {
+                          var data = new FormData()
+                          var url = (window.URL || window.webkitURL)
+                                  .createObjectURL(blob);
+
+                          // Prepare the playback
+                          var audioObject = $('<audio controls></audio>')
+                                  .attr('src', url);
+                                  
+                          // Wrap everything in a row
+                          var holderObject = $('<div class="row"></div>')
+                                  .append(audioObject)
+                                 
+                          // Append to the list
+                          listObject.append(holderObject);
+                      });
+                  }
+              }
+          }
+      };
+
+      // Prepare the recordings list
+      var listObject = $('[data-role="recordings"]');
+
+      // Prepare the record button
+      $('[data-role="controls"] > button').click(function () {
+          // Initialize the recorder
+          myRecorder.init();
+
+          // Get the button state 
+          var buttonState = !!$(this).attr('data-recording');
+
+          // Toggle
+          if (!buttonState) {
+              $(this).attr('data-recording', 'true');
+              myRecorder.start();
+          } else {
+              $(this).attr('data-recording', '');
+              myRecorder.stop(listObject);
+          }
+      });
+  });
 </script>
-
-    <!-- </div> -->
-    <!-- <div class="holder">
-        <div data-role="controls">
-            <button>Record</button>
+    <meta name="theme-color" content="#478ac9">
+    <meta property="og:title" content="Home">
+    <meta property="og:type" content="website">
+  </head>
+  <body>
+    <section class="u-clearfix u-palette-1-dark-1 u-section-1" id="carousel_685a">
+      <div class="u-clearfix u-expanded-width u-layout-wrap u-layout-wrap-1">
+        <div class="u-layout">
+          <div class="u-layout-row">
+            <div class="u-container-style u-layout-cell u-left-cell u-size-29 u-layout-cell-1">
+              <div class="u-container-layout u-container-layout-1">
+                <h1 class="u-custom-font u-font-oswald u-text u-text-1">Sentence:<br>
+                </h1>
+                <h1 class="u-custom-font u-font-oswald u-text u-text-2">Speaker:<br>
+                </h1>
+                <div class="u-border-2 u-border-grey-dark-1 u-shape u-shape-rectangle u-shape-1"></div>
+                <p class="u-text u-text-3">{% if speech != "" %}
+                  <a id="speechText">{{ speech }}</a>
+                  {% endif %}</p>
+                <div class="u-border-2 u-border-grey-dark-1 u-shape u-shape-rectangle u-shape-2"></div>
+                <p class="u-text u-text-4">{% if speaker != "" %}
+                  <a id="speechstate">{{ speaker }}</a>
+                  {% endif %}</p>
+                <div class="u-border-2 u-border-grey-75 u-preserve-proportions u-shape u-shape-circle u-shape-3">
+                    <form method="post" action="/">
+                        <div class="holder">
+                            <div data-role="controls">
+                                <button>
+                                    <ion-icon name="mic-outline"></ion-icon>
+                                </button>
+                            </div>
+                            <div data-role="recordings">
+                                
+                            </div>
+                
+                        </div>          
+                    </form>
+                </div>
+                <h1 class="u-custom-font u-font-oswald u-text u-text-5">Spectrogram:<br>
+                </h1>
+                <h1 class="u-custom-font u-font-oswald u-text u-text-6">Flow Chart:<br>
+                </h1>
+                <div class="u-border-2 u-border-grey-dark-1 u-shape u-shape-rectangle u-shape-4"><a>
+                    <img style="background-image: none;
+                    width: 296px;
+                    height: 338px;
+                    margin: 20px auto 0 23px;" src="{{img}}">
+                </a></div>
+                <div class="u-container-style u-group u-palette-1-base u-group-1">
+                  <div id="flowchart"class="u-container-layout u-container-layout-2" style="background-color:transparent !important; ">
+                        <a>
+                            <img width="200px" height="350px" src="../static/assets/images/flowc1.png">
+                        </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="u-align-center u-container-style u-layout-cell u-right-cell u-size-31 u-layout-cell-2">
+              <div class="u-container-layout u-container-layout-3">
+                <h1 class="u-custom-font u-font-oswald u-text u-text-7">Features:<br>
+                </h1>
+                <div class="u-list u-list-1">
+                  <div class="u-repeater u-repeater-1">
+                    <div class="u-container-style u-list-item u-repeater-item">
+                      <div class="u-container-layout u-similar-container u-container-layout-4">
+                        <h1 class="u-custom-font u-font-oswald u-text u-text-8">Flow Chart:<br>
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="u-container-style u-list-item u-repeater-item">
+                      <div class="u-container-layout u-similar-container u-container-layout-5">
+                        <h1 class="u-custom-font u-font-oswald u-text u-text-9">Flow Chart:<br>
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="u-container-style u-list-item u-repeater-item">
+                      <div class="u-container-layout u-similar-container u-container-layout-6">
+                        <h1 class="u-custom-font u-font-oswald u-text u-text-10">Flow Chart:<br>
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="u-container-style u-list-item u-repeater-item">
+                      <div class="u-container-layout u-similar-container u-container-layout-7">
+                        <h1 class="u-custom-font u-font-oswald u-text u-text-11">Flow Chart:<br>
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="u-container-style u-list-item u-repeater-item">
+                      <div class="u-container-layout u-similar-container u-container-layout-8">
+                        <h1 class="u-custom-font u-font-oswald u-text u-text-12">Flow Chart:<br>
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="u-container-style u-list-item u-repeater-item">
+                      <div class="u-container-layout u-similar-container u-container-layout-9">
+                        <h1 class="u-custom-font u-font-oswald u-text u-text-13">Flow Chart:<br>
+                        </h1>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div data-role="recordings"></div>
-    </div> -->
-
+      </div>
+    </section>
+    
+    
+    
+    
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-</body>
-</html>
+</body></html>
