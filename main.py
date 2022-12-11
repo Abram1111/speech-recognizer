@@ -14,9 +14,7 @@ import io
 import base64 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import seaborn as sns
-import wave
-from PIL import Image 
-import PIL 
+import librosa.display
 
 
 
@@ -37,6 +35,23 @@ class variables:
 #     response.headers.add('Access-Control-Allow-Origin', '*')
 
 #     return response
+def features_spectogram (feature_name ,feature):
+
+
+    # We'll show each in its own subplot
+    plt.figure(figsize=(6, 6))
+
+    librosa.display.specshow(feature)
+    plt.ylabel(feature_name )
+    plt.colorbar()
+
+    image_file_name='static/assets/images/'+feature_name +'.jpg'
+    plt.savefig(image_file_name)
+
+    
+
+
+
 
 def prepare_testing(to_test):
 
@@ -53,6 +68,10 @@ def prepare_testing(to_test):
     rolloff     = librosa.feature.spectral_rolloff(y=y, sr=sr)
     zcr         = librosa.feature.zero_crossing_rate(y)
     mfcc        = librosa.feature.mfcc(y=y, sr=sr)
+
+    features_spectogram ('mfcc',mfcc)
+    # features_spectogram ('rms',rmse)
+
 
     to_append   = f'{np.mean(chroma_stft)} {np.mean(rmse)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'
     for e in mfcc:
@@ -88,7 +107,6 @@ def test_model (wav_file):
     print('reeeeeeesult---------------------')
     print(result)
     return result
-
     
 def predict_sound(file_name):
     X, sample_rate = librosa.load(file_name, res_type='kaiser_fast') 
@@ -118,7 +136,7 @@ def predict_sound(file_name):
 def  visualize(file_name):
 
     fig,ax = plt.subplots(figsize=(6,6))
-    ax=sns.set_style(style='darkgrid')
+    ax      =sns.set_style(style='darkgrid')
     sr, y = wavfile.read(file_name)
     # select left channel only
     y = y[:,0]
@@ -134,10 +152,9 @@ def  visualize(file_name):
     img.seek(0)
     # Embed the result in the html output.
     data = base64.b64encode(img.getbuffer()).decode("ascii")
-    image_file_name='static/assets/images/result'+str(variables.counter)+'.jpg'
+    image_file_name='static/assets/images/result.jpg'
     plt.savefig(image_file_name)
     return f"<img src='data:image/png;base64,{data}'/>"
-    # return img
 
 
 
