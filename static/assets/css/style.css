@@ -420,17 +420,20 @@
     outline: none;
     display: block;
     border: none;
+    position: absolute;
+    left: -190px;
+    top: 20px;
     background-color: #D9AFD9;
     background-image: -webkit-gradient(linear, left bottom, left top, from(#D9AFD9), to(#97D9E1));
     background-image: -o-linear-gradient(bottom, #D9AFD9 0%, #97D9E1 100%);
     background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     cursor: pointer;
 }
 ion-icon {
-    font-size: 64px;
+    font-size: 50px;
   }
 [data-role="controls"] > button:hover {
     background-color: #ee7bee;
@@ -479,6 +482,12 @@ ion-icon {
     background-image: -webkit-gradient(linear, left top, left bottom, from(#0093E9), to(#80D0C7));
     background-image: -o-linear-gradient(top, #0093E9 0%, #80D0C7 100%);
     background-image: linear-gradient(180deg, #0093E9 0%, #80D0C7 100%);
+}
+#flowhead{
+    position: absolute;
+    left: 70px;
+    top: 70px;
+    z-index: 10;
 }
 #flowchart{
     background-color: transparent !important;
