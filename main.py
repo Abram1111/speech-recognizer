@@ -42,7 +42,7 @@ def prepare_testing(to_test):
 
     features=[]
     # reading records
-    y, sr = librosa.load(to_test)
+    y, sr       = librosa.load(to_test)
     # remove leading and trailing silence
     y, index    = librosa.effects.trim(y)
 
@@ -53,6 +53,7 @@ def prepare_testing(to_test):
     rolloff     = librosa.feature.spectral_rolloff(y=y, sr=sr)
     zcr         = librosa.feature.zero_crossing_rate(y)
     mfcc        = librosa.feature.mfcc(y=y, sr=sr)
+
     to_append   = f'{np.mean(chroma_stft)} {np.mean(rmse)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'
     for e in mfcc:
         to_append += f' {np.mean(e)}'
@@ -60,18 +61,18 @@ def prepare_testing(to_test):
     features.append(to_append.split())
 
     
-    for index in range(0,len(features[0])):
-        features[0][index]=float(features[0][index])
-    print (features)
+    for counter in range(0,len(features[0])):
+        features[0][counter]=float(features[0][counter])
+    # print (features)
     return features
 
 def test_model (wav_file):
     # wav_file='k_close_2.wav'
     # wav_file='a_open_8.wav'
 
-    wav_file='r_open_ (3).wav'
+    wav_file='(4).wav'
     features=prepare_testing(wav_file)
-    model= pickle.load(open('model_random1.pkl','rb'))
+    model= pickle.load(open('model_random2.pkl','rb'))
     model_output =model.predict(features)
     print (model_output[0])
     
@@ -79,8 +80,10 @@ def test_model (wav_file):
         result='Close the door'
     elif model_output[0]==1:
         result='Open the door'
-    elif model_output==2:
-        result='not recognized'
+    else :
+        result='not a correct sentence'
+  
+
         
     print('reeeeeeesult---------------------')
     print(result)
