@@ -137,14 +137,16 @@ def  visualize(file_name):
 
     fig,ax = plt.subplots(figsize=(6,6))
     ax      =sns.set_style(style='darkgrid')
-    sr, y = wavfile.read(file_name)
+    aud,sr = librosa.load(file_name)
     # select left channel only
-    y = y[:,0]
+    # y = y[:,0]
     # trim the first 125 seconds
-    first = y[:int(sr*15)]
+    first = aud[:int(sr*15)]
 
     powerSpectrum, frequenciesFound, time, imageAxis = plt.specgram(first, Fs=sr)
     # plt.show()
+    plt.colorbar()
+
     canvas=FigureCanvas(fig)
     img=io.BytesIO()
     fig.savefig(img, format='png')
