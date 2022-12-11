@@ -1,6 +1,6 @@
 from flask import Flask, render_template, send_file, request, redirect,jsonify
 import os
-import speech_recognition as sr
+
 import pickle
 import librosa
 import numpy as np
@@ -157,7 +157,7 @@ def predict_sound(file_name):
     features=[]
 
     features.append(np.concatenate((mfccs, chroma, mel, contrast, tonnetz),axis=0))
-    open_model = pickle.load(open(".pkl",'rb'))
+    open_model = pickle.load(open("audio_identefire__new__one.pkl",'rb'))
     result =open_model.predict(features)
     print(result)
     return result

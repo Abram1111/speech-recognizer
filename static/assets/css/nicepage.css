@@ -25554,6 +25554,7 @@ section.u-palette-1-dark-1:before,
 .u-table-alt-palette-1-dark-1 tr:nth-child(even) {
   color: #ffffff;
   background-color: #4c7397;
+  background-size: cover;
 }
 .u-button-style.u-palette-1-dark-1,
 .u-button-style.u-palette-1-dark-1[class*="u-border-"] {

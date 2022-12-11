@@ -53,7 +53,7 @@
   .u-section-1 .u-shape-3 {
     width: 197px;
     height: 197px;
-    margin: -162px 50px 0 auto;
+    /* margin: -162px 50px 0 auto; */
   }
   
   .u-section-1 .u-text-5 {
@@ -103,15 +103,14 @@
   }
   
   .u-section-1 .u-list-1 {
-    width: 559px;
-    margin: 27px 35px 0 auto;
+    
+    margin: 10px 0 0 80px;
   }
   
   .u-section-1 .u-repeater-1 {
     grid-gap: 10px 10px;
-    grid-auto-columns: calc(33.3333% - 6.66667px);
-    grid-template-columns: calc(33.3333% - 6.66667px) calc(33.3333% - 6.66667px) calc(33.3333% - 6.66667px);
-    min-height: 552px;
+    grid-auto-columns: 50%;
+    grid-template-columns: 50% 50%
   }
   
   .u-section-1 .u-container-layout-4 {
@@ -121,7 +120,7 @@
   .u-section-1 .u-text-8 {
     font-size: 1.5rem;
     font-weight: 700;
-    margin: 17px 0 0 20px;
+    margin: 0 0 10px 0;
   }
   
   .u-section-1 .u-container-layout-5 {
@@ -131,7 +130,7 @@
   .u-section-1 .u-text-9 {
     font-size: 1.5rem;
     font-weight: 700;
-    margin: 17px 0 0 20px;
+    margin: 0 0 10px 0;
   }
   
   .u-section-1 .u-container-layout-6 {
@@ -141,7 +140,7 @@
   .u-section-1 .u-text-10 {
     font-size: 1.5rem;
     font-weight: 700;
-    margin: 17px 0 0 20px;
+    margin: 0 0 10px 0;
   }
   
   .u-section-1 .u-container-layout-7 {
@@ -151,7 +150,7 @@
   .u-section-1 .u-text-11 {
     font-size: 1.5rem;
     font-weight: 700;
-    margin: 17px 0 0 20px;
+    margin: 0 0 10px 0;
   }
   
   .u-section-1 .u-container-layout-8 {
@@ -161,7 +160,7 @@
   .u-section-1 .u-text-12 {
     font-size: 1.5rem;
     font-weight: 700;
-    margin: 17px 0 0 20px;
+    margin: 0 0 10px 0;
   }
   
   .u-section-1 .u-container-layout-9 {
@@ -218,7 +217,7 @@
     }
   
     .u-section-1 .u-shape-3 {
-      margin-top: -121px;
+      /* margin-top: -121px; */
     }
   
     .u-section-1 .u-text-5 {
@@ -255,8 +254,8 @@
     }
   
     .u-section-1 .u-list-1 {
-      width: 486px;
-      margin-right: 0;
+      /* width: 486px;
+      margin-right: 0; */
     }
   
     .u-section-1 .u-repeater-1 {
@@ -416,13 +415,13 @@
     }
   }
   [data-role="controls"] > button {
-    margin: -167 50px auto;
+    margin: 0 50px auto;
     outline: none;
     display: block;
     border: none;
-    position: absolute;
+    /* position: absolute;
     left: -190px;
-    top: 20px;
+    top: 20px; */
     background-color: #D9AFD9;
     background-image: -webkit-gradient(linear, left bottom, left top, from(#D9AFD9), to(#97D9E1));
     background-image: -o-linear-gradient(bottom, #D9AFD9 0%, #97D9E1 100%);
@@ -492,3 +491,6 @@ ion-icon {
 #flowchart{
     background-color: transparent !important;
   }
+*{
+  user-select: none;
+}
