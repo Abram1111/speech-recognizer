@@ -27,8 +27,8 @@ def features_spectogram (feature_name ,feature):
 
 
     # We'll show each in its own subplot
-    plt.figure(figsize=(6, 6))
-
+    fig =plt.figure(figsize=(6, 6))
+    fig.patch.set_facecolor('black')
     librosa.display.specshow(feature)
     plt.ylabel(feature_name )
     plt.colorbar()
@@ -37,8 +37,9 @@ def features_spectogram (feature_name ,feature):
     plt.savefig(image_file_name)
 
 def draw_mel(sr,mel_Spectrogram,fet_name):
-    plt.figure(figsize=(6, 6))
+    fig=plt.figure(figsize=(6, 6))
     S_dB = librosa.power_to_db(mel_Spectrogram, ref=np.max)
+    fig.patch.set_facecolor('black')
     librosa.display.specshow(S_dB)
     plt.colorbar()
     image_file_name='static/assets/images/'+fet_name +'.jpg'
@@ -46,8 +47,9 @@ def draw_mel(sr,mel_Spectrogram,fet_name):
     
     
 def draw_contrast(Spectrogram,sr,fet_name):
-    plt.figure(figsize=(6, 6))
+    fig= plt.figure(figsize=(6, 6))
     contrast = librosa.feature.spectral_contrast(S=Spectrogram, sr=sr)
+    fig.patch.set_facecolor('black')
     librosa.display.specshow(contrast)
     plt.colorbar()
     image_file_name='static/assets/images/'+fet_name +'.jpg'
@@ -58,12 +60,17 @@ def draw_centroid(Spectrogram,fet_name):
     cent=librosa.feature.spectral_centroid(S=Spectrogram)
     times = librosa.times_like(cent)
     fig, ax = plt.subplots()
-    centroid_img=librosa.display.specshow(librosa.amplitude_to_db(Spectrogram, ref=np.max),
+    
+    fig.patch.set_facecolor('black')
+    img=librosa.display.specshow(librosa.amplitude_to_db(Spectrogram, ref=np.max),
                             y_axis='log', x_axis='time', ax=ax)
     ax.plot(times, cent.T, label='Spectral centroid', color='w')
     ax.legend(loc='upper right')
     ax.set(title='log Power spectrogram')
+    ax.tick_params(colors='white', which='both')
+    fig.colorbar(img)
     image_file_name='static/assets/images/'+fet_name +'.jpg'
+
     plt.savefig(image_file_name)
 
 
@@ -165,7 +172,8 @@ def predict_sound(file_name):
 def  visualize(file_name):
 
     fig,ax = plt.subplots(figsize=(6,6))
-    ax      =sns.set_style(style='darkgrid')
+    # ax      =sns.set_style(style='darkgrid')
+    ax.tick_params(colors='white', which='both')
     aud,sr = librosa.load(file_name)
     # select left channel only
     # y = y[:,0]
@@ -175,9 +183,11 @@ def  visualize(file_name):
     powerSpectrum, frequenciesFound, time, imageAxis = plt.specgram(first, Fs=sr)
     # plt.show()
     plt.colorbar()
-
+  
     canvas=FigureCanvas(fig)
     img=io.BytesIO()
+    fig.patch.set_facecolor('black')
+    
     fig.savefig(img, format='png')
 
     img.seek(0)

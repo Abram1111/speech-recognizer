@@ -25553,7 +25553,7 @@ section.u-palette-1-dark-1:before,
 .u-container-layout.u-container-layout.u-palette-1-dark-1:before,
 .u-table-alt-palette-1-dark-1 tr:nth-child(even) {
   color: #ffffff;
-  background-color: #4c7397;
+  background-color: black;
   background-size: cover;
 }
 .u-button-style.u-palette-1-dark-1,
