@@ -15,6 +15,7 @@ import base64
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import seaborn as sns
 import librosa.display
+import SpeakerIdentification
 
 
 
@@ -43,8 +44,7 @@ def draw_mel(sr,mel_Spectrogram,fet_name):
     librosa.display.specshow(S_dB)
     plt.colorbar()
     image_file_name='static/assets/images/'+fet_name +'.jpg'
-    plt.savefig(image_file_name)
-    
+    plt.savefig(image_file_name)    
     
 def draw_contrast(Spectrogram,sr,fet_name):
     fig= plt.figure(figsize=(6, 6))
@@ -54,8 +54,7 @@ def draw_contrast(Spectrogram,sr,fet_name):
     plt.colorbar()
     image_file_name='static/assets/images/'+fet_name +'.jpg'
     plt.savefig(image_file_name)
-   
-    
+      
 def draw_centroid(Spectrogram,fet_name):
     cent=librosa.feature.spectral_centroid(S=Spectrogram)
     times = librosa.times_like(cent)
@@ -73,8 +72,6 @@ def draw_centroid(Spectrogram,fet_name):
 
     plt.savefig(image_file_name)
 
-
-
 def draw(file_name):
     signal, sr = librosa.load(file_name)
     Spectrogram = np.abs(librosa.stft(signal))
@@ -84,8 +81,6 @@ def draw(file_name):
     draw_mel(sr,mel_Spectrogram,'mel')   
     draw_contrast(Spectrogram,sr,'contrast')
     draw_centroid(Spectrogram,'centroid')
-
-
 
 def prepare_testing(to_test):
 
@@ -212,31 +207,59 @@ def index():
 
 
         if request.method == "POST":
-            variables.counter+=1
-            # Sampling frequency
-            frequency = 44400
-            # Recording duration in seconds
-            duration = 1.5
-            # to record audio from
-            # sound-device into a Numpy
-            recording = sd.rec(int(duration * frequency),samplerate = frequency, channels = 2)
-            # Wait for the audio to complete
-            sd.wait()
-            # using wavio to save the recording in .wav format
-            # This will convert the NumPy array to an audio
-            # file with the given sampling frequency
-            file_name='result'+str(variables.counter)+'.wav'
-            wv.write(file_name, recording, frequency, sampwidth=2)
-            speech=test_model(file_name)
+            
+            file_name='testing_set\sample.wav'
+
+            SpeakerIdentification.record_audio_test()
+            speaker,speech=SpeakerIdentification.start_testing()
             speaker=predict_sound(file_name)
+
             # y, sr = librosa.load(file_name)
             draw(file_name)
             img= visualize(file_name)
             img='static/assets/images/result'+str(variables.counter)+'.jpg'
 
-
         # return send_file(speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr)
         return render_template('index.html', speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr,img=img)
+        
+# @app.route("/", methods=["GET", "POST"])
+# def index():
+
+#         speech =''
+#         speaker =''
+#         file_name=''
+#         img=''
+
+#         y=[]
+#         sr=[]
+
+
+#         if request.method == "POST":
+#             variables.counter+=1
+#             # Sampling frequency
+#             frequency = 44400
+#             # Recording duration in seconds
+#             duration = 1.5
+#             # to record audio from
+#             # sound-device into a Numpy
+#             recording = sd.rec(int(duration * frequency),samplerate = frequency, channels = 2)
+#             # Wait for the audio to complete
+#             sd.wait()
+#             # using wavio to save the recording in .wav format
+#             # This will convert the NumPy array to an audio
+#             # file with the given sampling frequency
+#             file_name='result'+str(variables.counter)+'.wav'
+#             wv.write(file_name, recording, frequency, sampwidth=2)
+#             # speech=test_model(file_name)
+#             speaker=predict_sound(file_name)
+#             # y, sr = librosa.load(file_name)
+#             draw(file_name)
+#             img= visualize(file_name)
+#             img='static/assets/images/result'+str(variables.counter)+'.jpg'
+
+
+#         # return send_file(speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr)
+#         return render_template('index.html', speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr,img=img)
 
 
 

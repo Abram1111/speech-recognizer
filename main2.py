@@ -16,6 +16,8 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import seaborn as sns
 import librosa.display
 import SpeakerIdentification
+import pandas as pd
+
 
 
 
@@ -28,8 +30,8 @@ def features_spectogram (feature_name ,feature):
 
 
     # We'll show each in its own subplot
-    plt.figure(figsize=(6, 6))
-
+    fig=plt.figure(figsize=(6, 6))
+    # fig.patch.set_facecolor('black')
     librosa.display.specshow(feature)
     plt.ylabel(feature_name )
     plt.colorbar()
@@ -38,8 +40,9 @@ def features_spectogram (feature_name ,feature):
     plt.savefig(image_file_name)
 
 def draw_mel(sr,mel_Spectrogram,fet_name):
-    plt.figure(figsize=(6, 6))
+    fig=plt.figure(figsize=(6, 6))
     S_dB = librosa.power_to_db(mel_Spectrogram, ref=np.max)
+    # fig.patch.set_facecolor('black')
     librosa.display.specshow(S_dB)
     plt.colorbar()
     image_file_name='static/assets/images/'+fet_name +'.jpg'
@@ -47,8 +50,9 @@ def draw_mel(sr,mel_Spectrogram,fet_name):
     
     
 def draw_contrast(Spectrogram,sr,fet_name):
-    plt.figure(figsize=(6, 6))
+    fig= plt.figure(figsize=(6, 6))
     contrast = librosa.feature.spectral_contrast(S=Spectrogram, sr=sr)
+    # fig.patch.set_facecolor('black')
     librosa.display.specshow(contrast)
     plt.colorbar()
     image_file_name='static/assets/images/'+fet_name +'.jpg'
@@ -56,20 +60,25 @@ def draw_contrast(Spectrogram,sr,fet_name):
    
     
 def draw_centroid(Spectrogram,fet_name):
+
     cent=librosa.feature.spectral_centroid(S=Spectrogram)
     times = librosa.times_like(cent)
     fig, ax = plt.subplots()
+    # ax.tick_params(colors='white',which= 'both')
+    # fig.patch.set_facecolor('black')
     centroid_img=librosa.display.specshow(librosa.amplitude_to_db(Spectrogram, ref=np.max),
                             y_axis='log', x_axis='time', ax=ax)
+    fig.colorbar(centroid_img)
     ax.plot(times, cent.T, label='Spectral centroid', color='w')
     ax.legend(loc='upper right')
-    ax.set(title='log Power spectrogram')
+    # ax.set(title='log Power spectrogram')
     image_file_name='static/assets/images/'+fet_name +'.jpg'
     plt.savefig(image_file_name)
 
 
 
 def draw(file_name):
+    file_name='testing_set\sample.wav'
     signal, sr = librosa.load(file_name)
     Spectrogram = np.abs(librosa.stft(signal))
     mel_Spectrogram = librosa.feature.melspectrogram(y=signal, sr=sr, n_mels=128,
@@ -133,8 +142,8 @@ def test_model (wav_file):
   
 
         
-    print('reeeeeeesult---------------------')
-    print(result)
+    # print('reeeeeeesult---------------------')
+    # print(result)
     return result
     
 def predict_sound(file_name):
@@ -163,50 +172,96 @@ def predict_sound(file_name):
     print(result)
     return result
 
-def  visualize(file_name):
+def visualize(y1, y2,score):
+    # fig, ax = plt.subplots(2, figsize=(8, 8))
+    # print(y1, y2)
+    # x1 = ("Abram", "Hager", "Mariem", "Naira")
+    # x2 = ("open the door", "wrong sentence", "open the gate", 'close ')
+    # ax[0].bar(x1, y1, align='center')
+    # ax[1].bar(x2, y2, align='center')
+    # ax[0].set_xlabel('speaker')
+    # ax[0].set_ylabel('score')
+    # ax[1].set_xlabel('sentence')
+    # ax[1].set_ylabel('score')
+    # fig.patch.set_facecolor('black')
+    # ax[0].tick_params(colors='white', which='both')
+    # ax[1].tick_params(colors='white', which='both')
+    # # for i in range(len(y1)):
+    # #     ax[0].hlines(y1[i], 0, x1[i])
+    # #     ax[1].hlines(y2[i], 0, x2[i])
 
-    fig,ax = plt.subplots(figsize=(6,6))
-    ax      =sns.set_style(style='darkgrid')
-    aud,sr = librosa.load(file_name)
-    # select left channel only
-    # y = y[:,0]
-    # trim the first 125 seconds
-    first = aud[:int(sr*15)]
+    fig, ax = plt.subplots(1, figsize=(10, 8))
+    x1 = ("A OD ","A CD ","A OG ","A CG  ",
+    "H OD ","H CD ","H OG ","H CG ",
+    "M OD ","M CD ","M OG ","M CG",
+    "N OD ","N CD ","N OG ","N CG ")
+    ax.bar(x1, abs(score), align='center')
+    ax.set_xlabel('speakers')
+    ax.set_ylabel('score')
+    # fig.patch.set_facecolor('black')
+    # ax.tick_params(colors='white', which='both')
 
-    powerSpectrum, frequenciesFound, time, imageAxis = plt.specgram(first, Fs=sr)
-    # plt.show()
-    plt.colorbar()
 
-    canvas=FigureCanvas(fig)
-    img=io.BytesIO()
-    fig.savefig(img, format='png')
+    df = pd.DataFrame({'category': x1,
+                    'number': abs(score)})
+    df.set_index('category', inplace=True)
+    df.sort_values('number', inplace=True)
 
-    img.seek(0)
-    # Embed the result in the html output.
-    data = base64.b64encode(img.getbuffer()).decode("ascii")
-    image_file_name='static/assets/images/result.jpg'
-    plt.savefig(image_file_name)
-    return f"<img src='data:image/png;base64,{data}'/>"
+    ax =df.plot(y='number', kind='bar', legend=False)
+    # plt.patch.set_facecolor('black')
 
+    plt.savefig('static/assets/images/hesto.jpg')
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
 
-        speech =''
-        speaker =''
-        file_name=''
-        img=''
+    speech = ''
+    speaker = ''
+    file_name = ''
+    img = ''
 
-        y=[]
-        sr=[]
+    y = []
+    sr = []
+
+    if request.method == "POST":
+
+        speaker, speech, speaker_scores, sentence_scores ,scores = SpeakerIdentification.start_testing()
+        file_name = 'testing_set\sample.wav'
+        draw(file_name)
+        img = visualize(speaker_scores, sentence_scores ,scores)
+        img = 'static/assets/images/result'+str(variables.counter)+'.jpg'
+
+    # return send_file(speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr)
+    return render_template('index.html', speech=speech, speaker=speaker, file_name=file_name, y=y, sr=sr, img=img)
+
+# @app.route("/", methods=["GET", "POST"])
+# def index():
+
+#         speech =''
+#         speaker =''
+#         file_name=''
+#         img=''
+
+#         y=[]
+#         sr=[]
 
 
-        if request.method == "POST":
-            speaker,speech=SpeakerIdentification.start_testing()
+#         if request.method == "POST":
+            
+#             file_name='testing_set\sample.wav'
 
-        # return send_file(speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr)
-        return render_template('index.html', speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr,img=img)
+#             SpeakerIdentification.record_audio_test()
+#             speaker_model1,speech=SpeakerIdentification.start_testing()
+#             speaker_model2=predict_sound(file_name)
+#             speaker=speaker_model1
+#             # y, sr = librosa.load(file_name)
+#             draw(file_name)
+#             img= visualize(file_name)
+#             img='static/assets/images/result'+str(variables.counter)+'.jpg'
+
+#         # return send_file(speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr)
+#         return render_template('index.html', speech=speech,speaker=speaker,file_name=file_name,y=y,sr=sr,img=img)
 
 
 

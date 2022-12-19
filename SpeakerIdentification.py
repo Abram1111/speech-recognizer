@@ -37,10 +37,9 @@ def calculate_delta(array):
     return deltas
 
 def extract_features(audio,rate):
-    
+    	 
     mfcc_feature = mfcc.mfcc(audio,rate, 0.025, 0.01,20,nfft = 1200, appendEnergy = True)    
     mfcc_feature = preprocessing.scale(mfcc_feature)
-    print(mfcc_feature)
 
     delta = calculate_delta(mfcc_feature)
     combined = np.hstack((mfcc_feature,delta)) 
@@ -55,17 +54,8 @@ def record_audio_test():
 	RECORD_SECONDS = 2.5
 	device_index = 2
 	audio = pyaudio.PyAudio()
-
-	# print("----------------------record device list---------------------")
-	# info = audio.get_host_api_info_by_index(0)
-	# numdevices = info.get('deviceCount')
-	# for i in range(0, numdevices):
-	# 		if (audio.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
-	# 			print("Input Device id ", i, " - ", audio.get_device_info_by_host_api_device_index(0, i).get('name'))
-	# print("-------------------------------------------------------------")
-	# index = int(input())		
-
 	index=1
+	print()
 	stream = audio.open(format=FORMAT, channels=CHANNELS,
 						rate=RATE, input=True,input_device_index = index,
 						frames_per_buffer=CHUNK)
@@ -92,11 +82,7 @@ def record_audio_test():
 
 def test_model():
 
-	# source		= "testing_set\\"  
-	# test_file 	= "testing_set_addition.txt"       
-	# file_paths 	= open(test_file,'r')
 	modelpath 	= "trained_models\\"
-
 
 
 	gmm_files = [os.path.join(modelpath,fname) for fname in os.listdir(modelpath) if fname.endswith('.gmm')]
@@ -122,33 +108,53 @@ def test_model():
 		scores = np.array(gmm.score(vector))
 		log_likelihood[i] = scores.sum()
 
+
 	winner = np.argmax(log_likelihood)
-	print("\tdetected as - ", speakers[winner])
 	time.sleep(1.0) 
-	return  speakers[winner]
+	score =max(abs(log_likelihood))
+	return  speakers[winner] , log_likelihood
 #choice=int(input("\n1.Record audio for training \n 2.Train Model \n 3.Record audio for testing \n 4.Test Model\n"))
 
+def draw_bars(score):
+    speaker_scores = [0, 0, 0, 0]
+    speaker_scores[0] = abs((score[0]+score[1]+score[2]+score[3])/4)
+    speaker_scores[1] = abs((score[4]+score[5]+score[6]+score[7])/4)
+    speaker_scores[2] = abs((score[8]+score[9]+score[10]+score[11])/4)
+    speaker_scores[3] = abs((score[12]+score[13]+score[14]+score[15])/4)
+    sentence_scores = [0, 0, 0, 0]
+    sentence_scores[0] = abs((score[0]+score[4]+score[8]+score[12])/4)
+    sentence_scores[1] = abs((score[1]+score[5]+score[9]+score[13])/4)
+    sentence_scores[2] = abs((score[2]+score[6]+score[10]+score[14])/4)
+    sentence_scores[3] = abs((score[3]+score[7]+score[11]+score[15])/4)
+
+    return speaker_scores, sentence_scores
+
+
 def start_testing():
-	result1=''
-	result2=''
-	record_audio_test()
-	selected_model=test_model()
+    result1 = ''
+    result2 = ''
+    record_audio_test()
+    selected_model, score = test_model()
+    y1, y2 = draw_bars(score)
+    print('socre', score)
+    print('max score', max(score))
+    if (max(score) < -28):
+        result1 = 'others'
+    elif(selected_model == 'mariam' or selected_model == 'mariam2' or selected_model == 'mariam3' or selected_model == 'mariam4'):
+        result1 = 'Mariam'
+    elif(selected_model == 'abram' or selected_model == 'abram2' or selected_model == 'abram3' or selected_model == 'abram4'):
+        result1 = 'Abram'
+    elif(selected_model == 'naira' or selected_model == 'naira2' or selected_model == 'naira3' or selected_model == 'naira4'):
+        result1 = 'Naira'
+    elif(selected_model == 'hager' or selected_model == 'hager2' or selected_model == 'hager3' or selected_model == 'hager4'):
+        result1 = 'Hager'
 
-	if(selected_model=='mariam'or selected_model=='mariam2' or selected_model=='mariam3'or selected_model== 'mariam4' ):
-		result1='Mariam'
-	elif(selected_model=='abram'or selected_model=='abram2' or selected_model=='abram3'or selected_model== 'abram4' ):
-		result1='Abram'
-	elif(selected_model=='naira'or selected_model=='naira2' or selected_model=='naira3'or selected_model== 'naira4' ):
-		result1='Naira'	
-	elif(selected_model=='hager'or selected_model=='hager2' or selected_model=='hager3'or selected_model== 'hager4' ):
-		result1='Hager'	
-	
-	if(selected_model=='mariam'or selected_model=='abram' or selected_model=='naira'or selected_model== 'hager' ):
-		result2='Open the door'
-	else:
-		result2='Not a correct sentence      ' +selected_model
+    if(selected_model == 'mariam' or selected_model == 'abram' or selected_model == 'naira' or selected_model == 'hager'):
+        result2 = 'Open the door'
+    else:
+        result2 = 'Not a correct sentence      '
 
-	return result1 ,result2
+    return result1, result2, y1, y2 ,score
 
 
 
