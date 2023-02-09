@@ -52,8 +52,6 @@ body {
 }
 
 .contaner {
-    padding-left: 15px;
-    padding-right: 15px;
     margin-right: auto;
     margin-left: auto;
 }
@@ -82,20 +80,23 @@ body {
 
 /* start features */
 .features {
-    padding-top: var(--section-padding);
-    padding-bottom: var(--section-padding);
+    padding-top: 0;
+    padding-bottom: 0;
     background-color: var(--section-background);
+
 }
 
 .features .contaner {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
+
 }
 
 .features .feat {
     padding: 20px;
     text-align: center;
+    max-height: 350px;
 }
 
 
@@ -136,11 +137,12 @@ body {
 
 .vesualization .contaner img {
     width: 100%;
-    height: 100%;
+    height: 90%;
 }
 
 .vesualization .contaner .img {
     grid-column: 2/4;
+    height: 450px;
 }
 
 [data-role="controls"]>button {
